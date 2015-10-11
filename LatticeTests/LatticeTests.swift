@@ -9,27 +9,52 @@
 import XCTest
 @testable import Lattice
 
+struct Person {
+    var name :String
+    var birthYear :Int
+}
+
 class LatticeTests: XCTestCase {
     
-    override func setUp() {
-        super.setUp()
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+    func testIntegerFieldType() {
+        XCTAssertTrue(FieldType.type(5) == .Integer, "Integer values should yield an integer field type")
+        XCTAssertFalse(FieldType.type("Hello") == .Integer, "String values should not yield an integer field type")
     }
     
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-        super.tearDown()
+    func testStringFieldType() {
+        XCTAssertTrue(FieldType.type("Hi") == .Text, "String values should yield a text field type")
+        XCTAssertFalse(FieldType.type(4) == .Text, "Integer values should not yield text field type")
     }
     
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    func testStructSchema() {
+        let bill = Person(name: "Bill", birthYear: 1955)
+        let s = Schema(model: Mirror(reflecting: bill))
+        XCTAssertEqual(s.columns.count, 2, "Automatically generate schema should have the correc tnumber of columns")
+        
+        XCTAssert(s.columns[0].name == "name" || s.columns[0].name == "birthYear")
+        
+        for col in s.columns {
+            if col.name == "name" {
+                XCTAssert(col.type == .Text)
+            } else if col.name == "birthYear"{
+                XCTAssert(col.type == .Integer)
+            }
+        }
     }
     
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measureBlock {
-            // Put the code you want to measure the time of here.
+    func testTupleSchema() {
+        let bill = (name: "Bill", birthYear: 1955)
+        let s = Schema(model: Mirror(reflecting: bill))
+        XCTAssertEqual(s.columns.count, 2, "Automatically generate schema should have the correc tnumber of columns")
+        
+        XCTAssert(s.columns[0].name == ".0" || s.columns[0].name == ".1")
+        
+        for col in s.columns {
+            if col.name == ".0" {
+                XCTAssert(col.type == .Text)
+            } else if col.name == ".1"{
+                XCTAssert(col.type == .Integer)
+            }
         }
     }
     
