@@ -29,33 +29,19 @@ class LatticeTests: XCTestCase {
     func testStructSchema() {
         let bill = Person(name: "Bill", birthYear: 1955)
         let s = Schema(model: Mirror(reflecting: bill))
-        XCTAssertEqual(s.columns.count, 2, "Automatically generate schema should have the correc tnumber of columns")
-        
-        XCTAssert(s.columns[0].name == "name" || s.columns[0].name == "birthYear")
-        
-        for col in s.columns {
-            if col.name == "name" {
-                XCTAssert(col.type == .Text)
-            } else if col.name == "birthYear"{
-                XCTAssert(col.type == .Integer)
-            }
-        }
+        XCTAssertEqual(s.types.count, 2, "Automatically generate schema should have the correct number of types")
+        XCTAssertEqual(s.types[s.index("name")!], FieldType.Text)
+        XCTAssertEqual(s.types[s.index("birthYear")!], FieldType.Integer)
     }
     
     func testTupleSchema() {
         let bill = (name: "Bill", birthYear: 1955)
         let s = Schema(model: Mirror(reflecting: bill))
-        XCTAssertEqual(s.columns.count, 2, "Automatically generate schema should have the correc tnumber of columns")
-        
-        XCTAssert(s.columns[0].name == ".0" || s.columns[0].name == ".1")
-        
-        for col in s.columns {
-            if col.name == ".0" {
-                XCTAssert(col.type == .Text)
-            } else if col.name == ".1"{
-                XCTAssert(col.type == .Integer)
-            }
-        }
+        XCTAssertEqual(s.types.count, 2, "Automatically generate schema should have the correct number of types")
+        XCTAssertEqual(s.types[0], FieldType.Text)
+        XCTAssertEqual(s.types[1], FieldType.Integer)
+        XCTAssertNil(s.names[0], "Tuple fields should be unnamed")
+        XCTAssertNil(s.names[1], "Tuple fields should have nil placeholder for names")
     }
     
 }

@@ -22,13 +22,22 @@ extension FieldType {
 
 extension Schema {
     init(model: Mirror) {
-        var cols = Array<Column>()
+        var t = Array<FieldType>()
+        var n = Array<String?>()
+        indices = Dictionary<String,Int>()
         for child in model.children {
-            if let label = child.label, let type = FieldType.type(child.value) {
-                cols.append(Column(name: label, type: type))
+            if let type = FieldType.type(child.value) {
+                t.append(type)
+                if let label = child.label where model.displayStyle != .Tuple {
+                    n.append(child.label)
+                    indices[label] = n.count - 1
+                } else {
+                    n.append(nil)
+                }
             }
         }
-        columns = cols
+        names = n
+        types = t
     }
 }
 

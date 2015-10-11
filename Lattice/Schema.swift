@@ -8,31 +8,24 @@
 
 import Foundation
 
-enum FieldType {
+public enum FieldType {
     case Text
     case Integer
 }
 
-extension FieldType {
-    var size :Int {
-        get {
-            switch self {
-            case .Text:
-                return 128
-            case .Integer:
-                return 8
-            }
-        }
+public struct Schema {
+    /// An array of types in order
+    public let types :[FieldType]
+    
+    /// An array of names in order
+    public let names :[String?]
+    
+    internal var indices :Dictionary<String,Int>
+    
+    /// Returns the index of a column for a given name
+    public func index(name :String) -> Int? {
+        return indices[name]
     }
-}
-
-struct Column {
-    let name :String
-    let type :FieldType
-}
-
-struct Schema {
-    let columns :[Column]
 }
 
 struct Table {
