@@ -21,14 +21,15 @@ extension FieldType {
 }
 
 extension Schema {
-    init(model: Mirror) {
+    init(model: Model) {
+        let mirror = Mirror(reflecting: model)
         var t = Array<FieldType>()
         var n = Array<String?>()
         indices = Dictionary<String,Int>()
-        for child in model.children {
+        for child in mirror.children {
             if let type = FieldType.type(child.value) {
                 t.append(type)
-                if let label = child.label where model.displayStyle != .Tuple {
+                if let label = child.label where mirror.displayStyle != .Tuple {
                     n.append(child.label)
                     indices[label] = n.count - 1
                 } else {
@@ -42,7 +43,7 @@ extension Schema {
 }
 
 extension Table {
-    init(model: Any) {
-        schema = Schema(model: Mirror(reflecting: model))
+    init(model: T) {
+        schema = Schema(model: model)
     }
 }

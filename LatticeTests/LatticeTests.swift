@@ -28,7 +28,7 @@ class LatticeTests: XCTestCase {
     
     func testStructSchema() {
         let bill = Person(name: "Bill", birthYear: 1955)
-        let s = Schema(model: Mirror(reflecting: bill))
+        let s = Schema(model: bill)
         XCTAssertEqual(s.types.count, 2, "Automatically generate schema should have the correct number of types")
         XCTAssertEqual(s.types[s.index("name")!], FieldType.Text)
         XCTAssertEqual(s.types[s.index("birthYear")!], FieldType.Integer)
@@ -36,7 +36,7 @@ class LatticeTests: XCTestCase {
     
     func testTupleSchema() {
         let bill = (name: "Bill", birthYear: 1955)
-        let s = Schema(model: Mirror(reflecting: bill))
+        let s = Schema(model: bill)
         XCTAssertEqual(s.types.count, 2, "Automatically generate schema should have the correct number of types")
         XCTAssertEqual(s.types[0], FieldType.Text)
         XCTAssertEqual(s.types[1], FieldType.Integer)

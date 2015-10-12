@@ -13,7 +13,8 @@ public enum FieldType {
     case Integer
 }
 
-public struct Schema {
+public struct Schema<T> {
+    typealias Model = T
     /// An array of types in order
     public let types :[FieldType]
     
@@ -28,6 +29,6 @@ public struct Schema {
     }
 }
 
-struct Table {
-    let schema :Schema
+struct Table<T> {
+    let schema :Schema<T>
 }
